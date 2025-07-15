@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SMTP Email Sender</title>
+  <style>
+    body { max-width: 600px; margin: auto; font-family: sans-serif; padding: 20px; }
+    label { display: block; margin-top: 10px; }
+    input, textarea { width: 100%; padding: 8px; }
+  </style>
+</head>
+<body>
+  <h2>Send Email via SMTP</h2>
+  <form id="emailForm">
+    <label>SMTP Host: <input type="text" name="host" required /></label>
+    <label>Port: <input type="number" name="port" value="465" required /></label>
+    <label>User: <input type="email" name="user" required /></label>
+    <label>Password: <input type="password" name="pass" required /></label>
+
+    <hr>
+    <label>To: <input type="email" name="to" required /></label>
+    <label>CC: <input type="text" name="cc" /></label>
+    <label>BCC: <input type="text" name="bcc" /></label>
+    <label>Subject: <input type="text" name="subject" /></label>
+    <label>Message: <textarea name="text" rows="5"></textarea></label>
+    <button type="submit">Send Email</button>
+  </form>
+
+  <p id="status"></p>
+
+  <script>
+    const form = document.getElementById("emailForm");
+    const status = document.getElementById("status");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      const res = await fetch("/api/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const text = await res.text();
+      status.textContent = text;
+    });
+  </script>
+</body>
+</html>
